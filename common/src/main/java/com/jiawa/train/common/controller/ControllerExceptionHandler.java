@@ -1,4 +1,6 @@
 package com.jiawa.train.common.controller;
+
+import com.jiawa.exception.BusinessException;
 import com.jiawa.train.common.response.CommonResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,7 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public CommonResp exceptionHandler(Exception e) throws Exception {
+    public CommonResp exceptionHandler(Exception e){
         // LOG.info("seata全局事务ID: {}", RootContext.getXID());
         // // 如果是在一次全局事务里出异常了，就不要包装返回值，将异常抛给调用方，让调用方回滚事务
         // if (StrUtil.isNotBlank(RootContext.getXID())) {
@@ -39,7 +41,7 @@ public class ControllerExceptionHandler {
      * 业务异常统一处理
      * @param e
      * @return
-     *//*
+/*     *//**/
     @ExceptionHandler(value = BusinessException.class)
     @ResponseBody
     public CommonResp exceptionHandler(BusinessException e) {
@@ -49,7 +51,7 @@ public class ControllerExceptionHandler {
         commonResp.setMessage(e.getE().getDesc());
         return commonResp;
     }
-*/
+
     /**
      * 校验异常统一处理
      * @param e
