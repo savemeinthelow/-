@@ -1,4 +1,4 @@
-package com.jiawa.exception;
+package com.jiawa.train.common.exception;
 
 public class BusinessException extends RuntimeException{
     private BusinessExceptionEnum e;

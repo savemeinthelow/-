@@ -1,6 +1,6 @@
 package com.jiawa.train.common.controller;
 
-import com.jiawa.exception.BusinessException;
+import com.jiawa.train.common.exception.BusinessException;
 import com.jiawa.train.common.response.CommonResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
