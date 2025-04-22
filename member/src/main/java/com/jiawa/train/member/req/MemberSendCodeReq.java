@@ -8,6 +8,9 @@ public class MemberSendCodeReq {
     @Pattern(regexp = "^1\\d{10}$",message = "手机号格式错误")
     private String mobile;
 
+    public MemberSendCodeReq() {
+    }
+
     public MemberSendCodeReq(String mobile) {
         this.mobile = mobile;
     }

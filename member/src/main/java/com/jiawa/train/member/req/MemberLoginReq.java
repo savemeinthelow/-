@@ -21,6 +21,7 @@ public class MemberLoginReq {
     public MemberLoginReq(String mobile, String code) {
         this.mobile = mobile;
         this.code = code;
+    }   public MemberLoginReq() {
     }
 
     @Override

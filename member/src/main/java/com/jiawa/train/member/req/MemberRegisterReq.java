@@ -9,7 +9,8 @@ public class MemberRegisterReq {
     public MemberRegisterReq(String mobile) {
         this.mobile = mobile;
     }
-
+    public MemberRegisterReq() {
+    }
     @Override
     public String toString() {
         return "MemberRegisterReq{" +
