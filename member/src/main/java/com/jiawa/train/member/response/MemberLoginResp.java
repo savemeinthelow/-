@@ -4,6 +4,30 @@ public class MemberLoginResp {
     private Long id;
 
     private String mobile;
+    private String token;
+
+    public MemberLoginResp(Long id, String mobile, String token) {
+        this.id = id;
+        this.mobile = mobile;
+        this.token = token;
+    }
+
+    @Override
+    public String toString() {
+        return "MemberLoginResp{" +
+                "id=" + id +
+                ", mobile='" + mobile + '\'' +
+                ", token='" + token + '\'' +
+                '}';
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public Long getId() {
         return id;
@@ -19,18 +43,6 @@ public class MemberLoginResp {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", mobile=").append(mobile);
-        sb.append("]");
-        return sb.toString();
     }
 
 }
