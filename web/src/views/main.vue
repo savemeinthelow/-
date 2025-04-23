@@ -22,17 +22,17 @@
 
 import TheHeaderView from "@/components/the-header.vue";
 import TheSiderView from "@/components/the-sider.vue";
-import axios from "axios";
-import {notification} from "ant-design-vue";
-import {ref} from "vue";
+/*import axios from "axios";
+import {notification} from "ant-design-vue";*/
+
 
 export default ({
   components:{
     TheHeaderView,
     TheSiderView
   },setup(){
-    const count = ref(0);
-    axios.get("/member/member/count").then((response) => {
+    // const count = ref(0);
+    /*axios.get("/member/member/count").then((response) => {
       let data = response.data;
       if (data.success) {
         count.value = data.content;
@@ -42,7 +42,7 @@ export default ({
     });
     return {
       count
-    }
+    }*/
   }
 });
 </script>
