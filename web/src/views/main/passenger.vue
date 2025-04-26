@@ -25,6 +25,11 @@
           </a-space>
         </template>
         <template v-else-if="column.dataIndex === 'type'">
+          <span v-for="item in PASSENGER_TYPE_ARRAY" :key="item.code">
+            <span v-if="item.key === record.type">
+              {{item.value}}
+            </span>
+          </span>
         </template>
       </template>
     </a-table>
@@ -38,7 +43,7 @@
           <a-input v-model:value="passenger.idCard"/>
         </a-form-item>
         <a-form-item label="类型">
-          <a-select v-model:value="passenger.type" placeholder="please select your zone">
+          <a-select v-model:value="passenger.type" placeholder="请选择乘车人类型">
             <a-select-option value="1">
               成人
             </a-select-option>
@@ -64,7 +69,7 @@ import {notification} from "ant-design-vue";
 export default defineComponent({
   name: "passenger-view",
   setup() {
-    // const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY;
+    const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY;
     let loading = ref(false);
     let passengers = ref([]);
     let passenger = ref({
@@ -88,7 +93,20 @@ export default defineComponent({
         size: 2
       });
     });
-
+    const onDelete = (record)=>{
+      axios.delete("/member/passenger/delete/"+record.id).then((response)=>{
+        const data = response.data;
+        if(data.success){
+          notification.success({description:"删除成功"});
+          handleQuery({
+            page:pagination.value.current,
+            size:pagination.value.pageSize
+          })
+        }else{
+          notification.error({description:data.message});
+        }
+      })
+    }
     const visible = ref(false);
     const onAdd = () => {
       passenger.value = {};
@@ -178,7 +196,9 @@ export default defineComponent({
       handleQuery,
       passengers,
       handleTableChange,
-      loading
+      loading,
+      onDelete,
+      PASSENGER_TYPE_ARRAY
 
     };
   },

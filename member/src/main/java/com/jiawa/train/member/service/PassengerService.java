@@ -54,4 +54,7 @@ public class PassengerService {
         return pageResp;
     }
 
+    public void delete(Long id) {
+        mapper.deleteByPrimaryKey(id);
+    }
 }
