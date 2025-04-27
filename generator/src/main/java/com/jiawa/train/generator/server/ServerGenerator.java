@@ -1,5 +1,7 @@
 package com.jiawa.train.generator.server;
 
+import com.jiawa.train.generator.util.DbUtil;
+import com.jiawa.train.generator.util.Field;
 import com.jiawa.train.generator.util.FreemarkerUtil;
 import freemarker.template.TemplateException;
 import org.dom4j.Document;
@@ -10,6 +12,7 @@ import org.dom4j.io.SAXReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ServerGenerator {
@@ -37,12 +40,17 @@ public class ServerGenerator {
         map.put("domain", domain);
         map.put("do_main", do_main);
         System.out.println("参数："+Domain+" "+domain);
-        gen(Domain, map, "service");
-        gen(Domain, map, "controller");
+/*        gen(Domain, map, "service");
+        gen(Domain, map, "controller");*/
         Node connectionURL = document.selectSingleNode("//@connectionURL");
         Node userId = document.selectSingleNode("//@userId");
         Node password = document.selectSingleNode("//@password");
-
+        DbUtil.user = userId.getText();
+        DbUtil.url = connectionURL.getText();
+        DbUtil.password = password.getText();
+        String tableNameCn = DbUtil.getTableComment(tableName.getText());
+        List<Field> columnByTableName = DbUtil.getColumnByTableName(tableName.getText());
+        System.out.println(columnByTableName);
     }
 
     private static void gen(String Domain, Map<String, Object> map, String target) throws IOException, TemplateException {
