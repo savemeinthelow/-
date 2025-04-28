@@ -13,7 +13,7 @@ import com.jiawa.train.member.mapper.MemberMapper;
 import com.jiawa.train.member.req.MemberLoginReq;
 import com.jiawa.train.member.req.MemberRegisterReq;
 import com.jiawa.train.member.req.MemberSendCodeReq;
-import com.jiawa.train.member.response.MemberLoginResp;
+import com.jiawa.train.member.resp.MemberLoginResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

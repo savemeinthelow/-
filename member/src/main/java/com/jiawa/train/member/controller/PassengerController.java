@@ -1,11 +1,11 @@
 package com.jiawa.train.member.controller;
 
 import com.jiawa.train.common.context.LoginMemberContext;
-import com.jiawa.train.common.response.CommonResp;
-import com.jiawa.train.common.response.PageResp;
+import com.jiawa.train.common.resp.CommonResp;
+import com.jiawa.train.common.resp.PageResp;
 import com.jiawa.train.member.req.PassengerQueryReq;
 import com.jiawa.train.member.req.PassengerSaveReq;
-import com.jiawa.train.member.response.PassengerQueryResp;
+import com.jiawa.train.member.resp.PassengerQueryResp;
 import com.jiawa.train.member.service.PassengerService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;

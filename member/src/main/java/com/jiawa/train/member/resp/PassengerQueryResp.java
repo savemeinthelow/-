@@ -1,4 +1,4 @@
-package com.jiawa.train.member.response;
+package com.jiawa.train.member.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

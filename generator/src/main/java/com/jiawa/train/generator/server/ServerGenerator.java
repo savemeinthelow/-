@@ -11,9 +11,7 @@ import org.dom4j.io.SAXReader;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ServerGenerator {
     static String serverPath = "[module]/src/main/java/com/jiawa/train/[module]/";
@@ -39,9 +37,10 @@ public class ServerGenerator {
         map.put("Domain", Domain);
         map.put("domain", domain);
         map.put("do_main", do_main);
+
+
         System.out.println("参数："+Domain+" "+domain);
-/*        gen(Domain, map, "service");
-        gen(Domain, map, "controller");*/
+
         Node connectionURL = document.selectSingleNode("//@connectionURL");
         Node userId = document.selectSingleNode("//@userId");
         Node password = document.selectSingleNode("//@password");
@@ -51,11 +50,21 @@ public class ServerGenerator {
         String tableNameCn = DbUtil.getTableComment(tableName.getText());
         List<Field> columnByTableName = DbUtil.getColumnByTableName(tableName.getText());
         System.out.println(columnByTableName);
+        Set<String> typeSet = getJavaTypes(columnByTableName);
+        map.put("typeSet", typeSet);
+        map.put("tableNameCn",tableNameCn);
+        map.put("readOnly",false);
+        map.put("fieldList",columnByTableName);
+        map.put("module",module);
+        gen(Domain, map, "service","service");
+        gen(Domain, map, "controller","controller");
+
+        gen(Domain,map,"req","saveReq");
     }
 
-    private static void gen(String Domain, Map<String, Object> map, String target) throws IOException, TemplateException {
+    private static void gen(String Domain, Map<String, Object> map,String packageName, String target) throws IOException, TemplateException {
         FreemarkerUtil.initConfig(target + ".ftl");
-        String toPath = serverPath +target+"/";
+        String toPath = serverPath +packageName+"/";
         new File(serverPath).mkdirs();
         String Target = target.substring(0, 1).toUpperCase() + target.substring(1);
         String fileName = toPath + Domain + Target + ".java";
@@ -71,5 +80,13 @@ public class ServerGenerator {
         Node node = document.selectSingleNode("//pom:configurationFile");
         System.out.println(node.getText());
         return node.getText();
+    }
+    private static Set<String> getJavaTypes(List<Field> fieldList) {
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < fieldList.size(); i++) {
+            Field field = fieldList.get(i);
+            set.add(field.getJavaType());
+        }
+        return set;
     }
 }

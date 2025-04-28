@@ -1,4 +1,4 @@
-package com.jiawa.train.common.response;
+package com.jiawa.train.common.resp;
 
 import java.io.Serializable;
 import java.util.List;

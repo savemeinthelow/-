@@ -1,4 +1,4 @@
-package com.jiawa.train.member.response;
+package com.jiawa.train.member.resp;
 
 public class MemberLoginResp {
     private Long id;
