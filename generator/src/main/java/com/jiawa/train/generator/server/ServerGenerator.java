@@ -16,6 +16,8 @@ import java.util.*;
 public class ServerGenerator {
     static String serverPath = "[module]/src/main/java/com/jiawa/train/[module]/";
     static String pomPath = "generator\\pom.xml";
+    static String vuePath = "web/src/views/main/";
+    static boolean readOnly = false;
     static String module = "";
 
     static {
@@ -53,13 +55,13 @@ public class ServerGenerator {
         Set<String> typeSet = getJavaTypes(columnByTableName);
         map.put("typeSet", typeSet);
         map.put("tableNameCn",tableNameCn);
-        map.put("readOnly",false);
+        map.put("readOnly",readOnly);
         map.put("fieldList",columnByTableName);
         map.put("module",module);
-        gen(Domain, map, "service","service");
+     /*   gen(Domain, map, "service","service");
         gen(Domain, map, "controller","controller");
-
         gen(Domain,map,"req","saveReq");
+        gen(Domain,map,"resp","queryResp");*/
     }
 
     private static void gen(String Domain, Map<String, Object> map,String packageName, String target) throws IOException, TemplateException {
@@ -69,6 +71,13 @@ public class ServerGenerator {
         String Target = target.substring(0, 1).toUpperCase() + target.substring(1);
         String fileName = toPath + Domain + Target + ".java";
         FreemarkerUtil.generator(fileName, map);
+    }
+    private static void genVue(String do_main,Map<String, Object> param)throws Exception{
+        FreemarkerUtil.initConfig("vue.ftl");
+        new File(vuePath).mkdirs();
+        String fileName  = vuePath+do_main+".vue";
+        System.out.println("开始生成:"+fileName);
+        FreemarkerUtil.generator(fileName,param);
     }
 
     private static String getGeneratorPath() throws DocumentException {
