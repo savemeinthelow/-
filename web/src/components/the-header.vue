@@ -60,4 +60,11 @@ li {
 a {
   color: #42b983;
 }
+.logo {
+   float: left;
+   height: 31px;
+   width: 150px;
+   color: white;
+   font-size: 20px;
+ }
 </style>

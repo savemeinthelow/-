@@ -19,7 +19,7 @@ public class LoginMemberFilter implements Ordered,GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 //        LOG.info("过滤器");
         String path = exchange.getRequest().getURI().getPath();
-        if (path.contains("/admin")||path.contains("/member/member/login")||path.contains("/member/member/send-code")){
+        if (path.contains("/admin")||path.contains("/member/member/login")||path.contains("/member/member/send-code")||path.contains("/business")){
             LOG.info("不需要登录验证: {}",path);
             return chain.filter(exchange);
         }
