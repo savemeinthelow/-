@@ -1,4 +1,4 @@
-package com.jiawa.train.business.controller;
+package com.jiawa.train.business.controller.admin;
 
 import com.jiawa.train.business.req.StationQueryReq;
 import com.jiawa.train.business.req.StationSaveReq;
@@ -11,8 +11,8 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/station")
-public class StationController {
+@RequestMapping("/admin/station")
+public class AdminStationController {
     @Resource
     private StationService service;
 

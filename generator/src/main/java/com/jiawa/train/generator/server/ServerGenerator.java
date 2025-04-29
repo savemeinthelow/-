@@ -56,7 +56,7 @@ public class ServerGenerator {
         map.put("fieldList",columnByTableName);
         map.put("module",module);
         gen(Domain, map, "service","service");
-        gen(Domain, map, "controller","controller");
+        gen(Domain, map, "admin/controller","adminController");
         gen(Domain,map,"req","saveReq");
         gen(Domain, map, "req", "queryReq");
         gen(Domain,map,"resp","queryResp");
