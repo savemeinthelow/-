@@ -16,7 +16,7 @@ import java.util.*;
 public class ServerGenerator {
     static String serverPath = "[module]/src/main/java/com/jiawa/train/[module]/";
     static String pomPath = "generator\\pom.xml";
-    static String vuePath = "web/src/views/main/";
+    static String vuePath = "admin/src/views/main/";
     static boolean readOnly = false;
     static String module = "";
 
@@ -39,10 +39,7 @@ public class ServerGenerator {
         map.put("Domain", Domain);
         map.put("domain", domain);
         map.put("do_main", do_main);
-
-
         System.out.println("参数："+Domain+" "+domain);
-
         Node connectionURL = document.selectSingleNode("//@connectionURL");
         Node userId = document.selectSingleNode("//@userId");
         Node password = document.selectSingleNode("//@password");
@@ -58,10 +55,12 @@ public class ServerGenerator {
         map.put("readOnly",readOnly);
         map.put("fieldList",columnByTableName);
         map.put("module",module);
-     /*   gen(Domain, map, "service","service");
+        gen(Domain, map, "service","service");
         gen(Domain, map, "controller","controller");
         gen(Domain,map,"req","saveReq");
-        gen(Domain,map,"resp","queryResp");*/
+        gen(Domain, map, "req", "queryReq");
+        gen(Domain,map,"resp","queryResp");
+        genVue(do_main,map);
     }
 
     private static void gen(String Domain, Map<String, Object> map,String packageName, String target) throws IOException, TemplateException {

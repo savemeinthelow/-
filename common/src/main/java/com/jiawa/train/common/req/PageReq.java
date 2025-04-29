@@ -1,4 +1,4 @@
-package com.jiawa.train.common.request;
+package com.jiawa.train.common.req;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
