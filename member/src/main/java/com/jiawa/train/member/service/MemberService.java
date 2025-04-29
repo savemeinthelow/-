@@ -44,7 +44,7 @@ public class MemberService {
         }
 
         Member member = new Member();
-        member.setId(SnowUtil.getSnowFlakeNextId());
+        member.setId(SnowUtil.getSnowflakeNextId());
         member.setMobile(mobile);
         memberMapper.insert(member);
         return member.getId();
@@ -58,7 +58,7 @@ public class MemberService {
         if (ObjectUtil.isNull(memberDB)) {
             LOG.info("手机号不存在，插入一条记录");
             Member member = new Member();
-            member.setId(SnowUtil.getSnowFlakeNextId());
+            member.setId(SnowUtil.getSnowflakeNextId());
             member.setMobile(mobile);
             memberMapper.insert(member);
         } else {

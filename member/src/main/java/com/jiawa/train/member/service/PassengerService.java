@@ -32,7 +32,7 @@ public void save(PassengerSaveReq req) {
 DateTime now = DateTime.now();
 Passenger passenger = BeanUtil.copyProperties(req, Passenger.class);
 if (ObjectUtil.isNull(passenger.getId())) {
-passenger.setId(SnowUtil.getSnowFlakeNextId());
+passenger.setId(SnowUtil.getSnowflakeNextId());
 passenger.setCreateTime(now);
 passenger.setUpdateTime(now);
 passengerMapper.insert(passenger);

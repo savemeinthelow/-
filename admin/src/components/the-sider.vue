@@ -10,6 +10,7 @@
         <a-menu-item key="/welcome"><router-link to="/welcome"><coffee-outlined /> &nbsp;欢迎</router-link></a-menu-item>
         <a-menu-item key="/about"><router-link to="/about"><coffee-outlined /> &nbsp;关于</router-link></a-menu-item>
         <a-menu-item key="/station"><router-link to="/station"><coffee-outlined /> &nbsp;车站管理</router-link></a-menu-item>
+      <a-menu-item key="/train"><router-link to="/train"><coffee-outlined /> &nbsp;火车管理</router-link></a-menu-item>
 
     </a-menu>
   </a-layout-sider>
