@@ -10,9 +10,9 @@ import com.jiawa.train.common.util.SnowUtil;
 import com.jiawa.train.business.domain.TrainStation;
 import com.jiawa.train.business.domain.TrainStationExample;
 import com.jiawa.train.business.mapper.TrainStationMapper;
-import com.jiawa.train.business.req.StationQueryReq;
-import com.jiawa.train.business.req.StationSaveReq;
-import com.jiawa.train.business.resp.StationQueryResp;
+import com.jiawa.train.business.req.TrainStationQueryReq;
+import com.jiawa.train.business.req.TrainStationSaveReq;
+import com.jiawa.train.business.resp.TrainStationQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,28 +21,28 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class StationService {
+public class TrainStationService {
 
-private static final Logger LOG = LoggerFactory.getLogger(StationService.class);
+private static final Logger LOG = LoggerFactory.getLogger(TrainStationService.class);
 
 @Resource
 private TrainStationMapper trainStationMapper;
 
-public void save(StationSaveReq req) {
+public void save(TrainStationSaveReq req) {
 DateTime now = DateTime.now();
-TrainStation station = BeanUtil.copyProperties(req, TrainStation.class);
-if (ObjectUtil.isNull(station.getId())) {
-station.setId(SnowUtil.getSnowflakeNextId());
-station.setCreateTime(now);
-station.setUpdateTime(now);
-trainStationMapper.insert(station);
+TrainStation trainStation = BeanUtil.copyProperties(req, TrainStation.class);
+if (ObjectUtil.isNull(trainStation.getId())) {
+trainStation.setId(SnowUtil.getSnowflakeNextId());
+trainStation.setCreateTime(now);
+trainStation.setUpdateTime(now);
+trainStationMapper.insert(trainStation);
 } else {
-station.setUpdateTime(now);
-trainStationMapper.updateByPrimaryKey(station);
+trainStation.setUpdateTime(now);
+trainStationMapper.updateByPrimaryKey(trainStation);
 }
 }
 
-public PageResp<StationQueryResp> queryList(StationQueryReq req) {
+public PageResp<TrainStationQueryResp> queryList(TrainStationQueryReq req) {
     TrainStationExample trainStationExample = new TrainStationExample();
     trainStationExample.setOrderByClause("id desc");
     TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
@@ -50,15 +50,15 @@ public PageResp<StationQueryResp> queryList(StationQueryReq req) {
     LOG.info("查询页码：{}", req.getPage());
     LOG.info("每页条数：{}", req.getSize());
     PageHelper.startPage(req.getPage(), req.getSize());
-    List<TrainStation> stationList = trainStationMapper.selectByExample(trainStationExample);
+    List<TrainStation> trainStationList = trainStationMapper.selectByExample(trainStationExample);
 
-    PageInfo<TrainStation> pageInfo = new PageInfo<>(stationList);
+    PageInfo<TrainStation> pageInfo = new PageInfo<>(trainStationList);
     LOG.info("总行数：{}", pageInfo.getTotal());
     LOG.info("总页数：{}", pageInfo.getPages());
 
-    List<StationQueryResp> list = BeanUtil.copyToList(stationList, StationQueryResp.class);
+    List<TrainStationQueryResp> list = BeanUtil.copyToList(trainStationList, TrainStationQueryResp.class);
 
-        PageResp<StationQueryResp> pageResp = new PageResp<>();
+        PageResp<TrainStationQueryResp> pageResp = new PageResp<>();
             pageResp.setTotal(pageInfo.getTotal());
             pageResp.setList(list);
             return pageResp;

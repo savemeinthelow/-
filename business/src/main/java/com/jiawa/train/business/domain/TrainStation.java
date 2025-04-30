@@ -1,15 +1,26 @@
 package com.jiawa.train.business.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-public class Station {
+public class TrainStation {
     private Long id;
+
+    private String trainCode;
+
+    private Integer index;
 
     private String name;
 
     private String namePinyin;
 
-    private String namePy;
+    private Date inTime;
+
+    private Date outTime;
+
+    private Date stopTime;
+
+    private BigDecimal km;
 
     private Date createTime;
 
@@ -21,6 +32,22 @@ public class Station {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTrainCode() {
+        return trainCode;
+    }
+
+    public void setTrainCode(String trainCode) {
+        this.trainCode = trainCode;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 
     public String getName() {
@@ -39,12 +66,36 @@ public class Station {
         this.namePinyin = namePinyin;
     }
 
-    public String getNamePy() {
-        return namePy;
+    public Date getInTime() {
+        return inTime;
     }
 
-    public void setNamePy(String namePy) {
-        this.namePy = namePy;
+    public void setInTime(Date inTime) {
+        this.inTime = inTime;
+    }
+
+    public Date getOutTime() {
+        return outTime;
+    }
+
+    public void setOutTime(Date outTime) {
+        this.outTime = outTime;
+    }
+
+    public Date getStopTime() {
+        return stopTime;
+    }
+
+    public void setStopTime(Date stopTime) {
+        this.stopTime = stopTime;
+    }
+
+    public BigDecimal getKm() {
+        return km;
+    }
+
+    public void setKm(BigDecimal km) {
+        this.km = km;
     }
 
     public Date getCreateTime() {
@@ -70,9 +121,14 @@ public class Station {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", trainCode=").append(trainCode);
+        sb.append(", index=").append(index);
         sb.append(", name=").append(name);
         sb.append(", namePinyin=").append(namePinyin);
-        sb.append(", namePy=").append(namePy);
+        sb.append(", inTime=").append(inTime);
+        sb.append(", outTime=").append(outTime);
+        sb.append(", stopTime=").append(stopTime);
+        sb.append(", km=").append(km);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append("]");

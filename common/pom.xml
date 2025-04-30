@@ -71,4 +71,7 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
+    <packaging>
+        jar
+    </packaging>
 </project>
