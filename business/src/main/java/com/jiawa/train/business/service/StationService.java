@@ -5,14 +5,14 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.jiawa.train.common.resp.PageResp;
-import com.jiawa.train.common.util.SnowUtil;
-import com.jiawa.train.business.domain.TrainStation;
-import com.jiawa.train.business.domain.TrainStationExample;
-import com.jiawa.train.business.mapper.TrainStationMapper;
+import com.jiawa.train.business.domain.Station;
+import com.jiawa.train.business.domain.StationExample;
+import com.jiawa.train.business.mapper.StationMapper;
 import com.jiawa.train.business.req.StationQueryReq;
 import com.jiawa.train.business.req.StationSaveReq;
 import com.jiawa.train.business.resp.StationQueryResp;
+import com.jiawa.train.common.resp.PageResp;
+import com.jiawa.train.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,48 +23,48 @@ import java.util.List;
 @Service
 public class StationService {
 
-private static final Logger LOG = LoggerFactory.getLogger(StationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StationService.class);
 
-@Resource
-private TrainStationMapper trainStationMapper;
+    @Resource
+    private StationMapper stationMapper;
 
-public void save(StationSaveReq req) {
-DateTime now = DateTime.now();
-TrainStation station = BeanUtil.copyProperties(req, TrainStation.class);
-if (ObjectUtil.isNull(station.getId())) {
-station.setId(SnowUtil.getSnowflakeNextId());
-station.setCreateTime(now);
-station.setUpdateTime(now);
-trainStationMapper.insert(station);
-} else {
-station.setUpdateTime(now);
-trainStationMapper.updateByPrimaryKey(station);
-}
-}
+    public void save(StationSaveReq req) {
+        DateTime now = DateTime.now();
+        Station station = BeanUtil.copyProperties(req, Station.class);
+        if (ObjectUtil.isNull(station.getId())) {
+            station.setId(SnowUtil.getSnowflakeNextId());
+            station.setCreateTime(now);
+            station.setUpdateTime(now);
+            stationMapper.insert(station);
+        } else {
+            station.setUpdateTime(now);
+            stationMapper.updateByPrimaryKey(station);
+        }
+    }
 
-public PageResp<StationQueryResp> queryList(StationQueryReq req) {
-    TrainStationExample trainStationExample = new TrainStationExample();
-    trainStationExample.setOrderByClause("id desc");
-    TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
+    public PageResp<StationQueryResp> queryList(StationQueryReq req) {
+        StationExample trainStationExample = new StationExample();
+        trainStationExample.setOrderByClause("id desc");
+        StationExample.Criteria criteria = trainStationExample.createCriteria();
 
-    LOG.info("查询页码：{}", req.getPage());
-    LOG.info("每页条数：{}", req.getSize());
-    PageHelper.startPage(req.getPage(), req.getSize());
-    List<TrainStation> stationList = trainStationMapper.selectByExample(trainStationExample);
+        LOG.info("查询页码：{}", req.getPage());
+        LOG.info("每页条数：{}", req.getSize());
+        PageHelper.startPage(req.getPage(), req.getSize());
+        List<Station> stationList = stationMapper.selectByExample(trainStationExample);
 
-    PageInfo<TrainStation> pageInfo = new PageInfo<>(stationList);
-    LOG.info("总行数：{}", pageInfo.getTotal());
-    LOG.info("总页数：{}", pageInfo.getPages());
+        PageInfo<Station> pageInfo = new PageInfo<>(stationList);
+        LOG.info("总行数：{}", pageInfo.getTotal());
+        LOG.info("总页数：{}", pageInfo.getPages());
 
-    List<StationQueryResp> list = BeanUtil.copyToList(stationList, StationQueryResp.class);
+        List<StationQueryResp> list = BeanUtil.copyToList(stationList, StationQueryResp.class);
 
         PageResp<StationQueryResp> pageResp = new PageResp<>();
-            pageResp.setTotal(pageInfo.getTotal());
-            pageResp.setList(list);
-            return pageResp;
-            }
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setList(list);
+        return pageResp;
+    }
 
-            public void delete(Long id) {
-            trainStationMapper.deleteByPrimaryKey(id);
-            }
-            }
+    public void delete(Long id) {
+        stationMapper.deleteByPrimaryKey(id);
+    }
+}
