@@ -62,6 +62,11 @@ public class TrainService {
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(list);
         return pageResp;
+    } public List<TrainQueryResp> queryAll( ) {
+        TrainExample trainExample = new TrainExample();
+        trainExample.setOrderByClause("code asc");
+        List<Train> trainList = trainMapper.selectByExample(trainExample);
+        return BeanUtil.copyToList(trainList, TrainQueryResp.class);
     }
 
     public void delete(Long id) {
