@@ -2,6 +2,7 @@ package com.jiawa.train.generator.server;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.jiawa.train.business.enums.SeatColEnum;
 import com.jiawa.train.business.enums.SeatTypeEnum;
 
 import java.io.FileOutputStream;
@@ -29,7 +30,7 @@ public class EnumGenerator {
             toJson(ConfirmOrderStatusEnum.class, bufferObject, bufferArray);*/
 //            toJson(TrainTypeEnum.class, bufferObject, bufferArray);
             toJson(SeatTypeEnum.class, bufferObject, bufferArray);
-
+            toJson(SeatColEnum.class, bufferObject, bufferArray);
             StringBuffer buffer = bufferObject.append("\r\n").append(bufferArray);
             writeJs(buffer);
         } catch (Exception e) {
