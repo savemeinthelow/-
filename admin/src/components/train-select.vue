@@ -1,7 +1,12 @@
 <template>
   <a-select v-model:value="trainCode" show-search
-            :filterOption="filterTrainCodeOption">
-    <a-select-option v-for="item in trains" :key="item.code" :value="item.code"
+            :filterOption="filterTrainCodeOption"
+            :style="'width:'+ _width"
+            @change="onChange"
+            placeholder="请选择车次"
+  >
+    <a-select-option v-for="item in trains" :key="item.code"
+                     :value="item.code"
                      :label="item.code +item.start + item.end">
       {{ item.code }} | {{ item.start }}~{{ item.end }}
     </a-select-option>
@@ -14,11 +19,15 @@ import {notification} from "ant-design-vue";
 
 export default defineComponent({
   name: "train-select-view",
-  props: ["modelValue"],
+  props: ["modelValue","width"],
   emits: ['update:modelValue', 'change'],
   setup(props,{emit}) {
     const trainCode = ref()
     const trains = ref([])
+    const _width = ref(props.width);
+    if(Tool.isEmpty(props.width)){
+      _width.value="100%"
+    }
     watch(()=> props.modelValue,()=>{
       trainCode.value = props.modelValue
     },{immediate:true});
@@ -38,7 +47,7 @@ export default defineComponent({
     onMounted(()=>{
       queryTrainCode()
     })
-    const onchange= (value)=>{
+    const onChange= (value)=>{
       emit('update:modelValue',value);
       let train = trains.value.filter(item=>item.code===value)[0];
       if(Tool.isEmpty(train)){
@@ -49,7 +58,8 @@ export default defineComponent({
     return {
       filterTrainCodeOption,
       trains,
-      onchange
+      onChange,
+      _width
     }
   }
 })

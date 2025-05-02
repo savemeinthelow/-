@@ -28,7 +28,7 @@
            ok-text="确认" cancel-text="取消">
     <a-form :model="trainStation" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-item label="车次编号">
-    <train-select-view v-model="trainStation.trainCode"></train-select-view>
+    <train-select-view v-model="trainStation.trainCode" width="100px"></train-select-view>
       </a-form-item>
       <a-form-item label="站序">
         <a-input v-model:value="trainStation.index"/>
@@ -208,21 +208,7 @@ export default defineComponent({
         }
       });
     };
-    const trains = ref([])
 
-    const queryTrainCode = () => {
-      axios.get("/business/admin/train/query-all").then((response) => {
-        let data = response.data;
-        if (data.success) {
-          trains.value = data.content;
-        } else {
-          notification.error({description: data.message});
-        }
-      });
-    };
-    const filterTrainCodeOption = (input, option) => {
-      return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    }
     const handleTableChange = (page) => {
       // console.log("看看自带的分页参数都有啥：" + JSON.stringify(page));
       pagination.value.pageSize = page.pageSize;
@@ -233,7 +219,6 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      queryTrainCode();
       handleQuery({
         page: 1,
         size: pagination.value.pageSize
@@ -249,12 +234,10 @@ export default defineComponent({
       handleTableChange,
       handleQuery,
       loading,
-      trains,
       onAdd,
       handleOk,
       onEdit,
-      onDelete, queryTrainCode,
-      filterTrainCodeOption,
+      onDelete,
     };
   },
 });
