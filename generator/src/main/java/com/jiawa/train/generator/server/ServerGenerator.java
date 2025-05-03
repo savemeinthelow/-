@@ -17,7 +17,7 @@ public class ServerGenerator {
     static String serverPath = "[module]/src/main/java/com/jiawa/train/[module]/";
     static String pomPath = "generator\\pom.xml";
     static String vuePath = "admin/src/views/main/";
-    static boolean readOnly = false;
+    static boolean readOnly = true;
     static String module = "";
 
     static {
@@ -55,11 +55,11 @@ public class ServerGenerator {
         map.put("readOnly",readOnly);
         map.put("fieldList",columnByTableName);
         map.put("module",module);
-        gen(Domain, map, "service","service");
-        gen(Domain, map, "controller/admin","adminController");
-        gen(Domain,map,"req","saveReq");
-        gen(Domain, map, "req", "queryReq");
-        gen(Domain,map,"resp","queryResp");
+//        gen(Domain, map, "service","service");
+//        gen(Domain, map, "controller/admin","adminController");
+//        gen(Domain,map,"req","saveReq");
+//        gen(Domain, map, "req", "queryReq");
+//        gen(Domain,map,"resp","queryResp");
         genVue(do_main,map);
     }
 
