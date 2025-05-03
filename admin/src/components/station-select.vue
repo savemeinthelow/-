@@ -1,7 +1,7 @@
 <template>
   <a-select v-model:value="name" show-search allowClear
             :filterOption="filterNameOption"
-            :style="'width:'+ _width"
+            :style="'width:'+ localWidth"
             @change="onChange"
             placeholder="请选择车站"
   >
@@ -24,9 +24,9 @@ export default defineComponent({
   setup(props,{emit}) {
     const name = ref()
     const stations = ref([])
-    const _width = ref(props.width);
+    const localWidth = ref(props.width);
     if(Tool.isEmpty(props.width)){
-      _width.value="100%"
+      localWidth.value="100%"
     }
     watch(()=> props.modelValue,()=>{
       name.value = props.modelValue
@@ -59,7 +59,7 @@ export default defineComponent({
       filterNameOption,
       stations,
       onChange,
-      _width
+      localWidth
     }
   }
 })
