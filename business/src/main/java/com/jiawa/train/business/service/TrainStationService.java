@@ -3,6 +3,7 @@ package com.jiawa.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jiawa.train.common.resp.PageResp;
@@ -46,7 +47,7 @@ public class TrainStationService {
         TrainStationExample trainStationExample = new TrainStationExample();
         trainStationExample.setOrderByClause("train_code asc ,`index` asc");
         TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
-        if (ObjectUtil.isNotNull(req.getTrainCode())){
+        if (StrUtil.isNotBlank(req.getTrainCode())){
             criteria.andTrainCodeEqualTo(req.getTrainCode());
         }
         LOG.info("查询页码：{}", req.getPage());

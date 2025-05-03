@@ -37,4 +37,5 @@ public class AdminStationController {
     public CommonResp<List<StationQueryResp>> queryList(){
         return new CommonResp(service.queryAll());
     }
+
 }
