@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model:value="name" show-search
+  <a-select v-model:value="name" show-search allowClear
             :filterOption="filterNameOption"
             :style="'width:'+ _width"
             @change="onChange"
