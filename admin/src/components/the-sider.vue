@@ -53,7 +53,21 @@
           </router-link>
         </a-menu-item>
       </a-sub-menu>
+      <a-sub-menu key="business">
+        <template #title>
+          <span>
+            <UnorderedListOutlined />
+            基础数据
+          </span>
+        </template>
+        <a-menu-item key="/business/daily-train">
+          <router-link to="/business/daily-train">
+            <MenuUnfoldOutlined /> &nbsp; 车站管理
+          </router-link>
+        </a-menu-item>
+      </a-sub-menu>
     </a-menu>
+
   </a-layout-sider>
 </template>
 
