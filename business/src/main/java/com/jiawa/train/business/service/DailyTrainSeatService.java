@@ -24,51 +24,51 @@ import java.util.List;
 @Service
 public class DailyTrainSeatService {
 
-private static final Logger LOG = LoggerFactory.getLogger(DailyTrainSeatService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DailyTrainSeatService.class);
 
-@Resource
-private DailyTrainSeatMapper dailyTrainSeatMapper;
+    @Resource
+    private DailyTrainSeatMapper dailyTrainSeatMapper;
 
-public void save(DailyTrainSeatSaveReq req) {
-DateTime now = DateTime.now();
-DailyTrainSeat dailyTrainSeat = BeanUtil.copyProperties(req, DailyTrainSeat.class);
-if (ObjectUtil.isNull(dailyTrainSeat.getId())) {
-dailyTrainSeat.setId(SnowUtil.getSnowflakeNextId());
-dailyTrainSeat.setCreateTime(now);
-dailyTrainSeat.setUpdateTime(now);
-dailyTrainSeatMapper.insert(dailyTrainSeat);
-} else {
-dailyTrainSeat.setUpdateTime(now);
-dailyTrainSeatMapper.updateByPrimaryKey(dailyTrainSeat);
-}
-}
-
-public PageResp<DailyTrainSeatQueryResp> queryList(DailyTrainSeatQueryReq req) {
-    DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
-    dailyTrainSeatExample.setOrderByClause("train_code asc,carriage_index asc,carriage_seat_index asc");
-    DailyTrainSeatExample.Criteria criteria = dailyTrainSeatExample.createCriteria();
-    if (StrUtil.isNotBlank(req.getTrainCode())) {
-        System.out.println(req.getTrainCode());
-        criteria.andTrainCodeEqualTo(req.getTrainCode());
+    public void save(DailyTrainSeatSaveReq req) {
+        DateTime now = DateTime.now();
+        DailyTrainSeat dailyTrainSeat = BeanUtil.copyProperties(req, DailyTrainSeat.class);
+        if (ObjectUtil.isNull(dailyTrainSeat.getId())) {
+            dailyTrainSeat.setId(SnowUtil.getSnowflakeNextId());
+            dailyTrainSeat.setCreateTime(now);
+            dailyTrainSeat.setUpdateTime(now);
+            dailyTrainSeatMapper.insert(dailyTrainSeat);
+        } else {
+            dailyTrainSeat.setUpdateTime(now);
+            dailyTrainSeatMapper.updateByPrimaryKey(dailyTrainSeat);
+        }
     }
-    LOG.info("查询页码：{}", req.getPage());
-    LOG.info("每页条数：{}", req.getSize());
-    PageHelper.startPage(req.getPage(), req.getSize());
-    List<DailyTrainSeat> dailyTrainSeatList = dailyTrainSeatMapper.selectByExample(dailyTrainSeatExample);
 
-    PageInfo<DailyTrainSeat> pageInfo = new PageInfo<>(dailyTrainSeatList);
-    LOG.info("总行数：{}", pageInfo.getTotal());
-    LOG.info("总页数：{}", pageInfo.getPages());
+    public PageResp<DailyTrainSeatQueryResp> queryList(DailyTrainSeatQueryReq req) {
+        DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
+        dailyTrainSeatExample.setOrderByClause("train_code asc,carriage_index asc,carriage_seat_index asc");
+        DailyTrainSeatExample.Criteria criteria = dailyTrainSeatExample.createCriteria();
+        if (StrUtil.isNotBlank(req.getTrainCode())) {
+            System.out.println(req.getTrainCode());
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
+        LOG.info("查询页码：{}", req.getPage());
+        LOG.info("每页条数：{}", req.getSize());
+        PageHelper.startPage(req.getPage(), req.getSize());
+        List<DailyTrainSeat> dailyTrainSeatList = dailyTrainSeatMapper.selectByExample(dailyTrainSeatExample);
 
-    List<DailyTrainSeatQueryResp> list = BeanUtil.copyToList(dailyTrainSeatList, DailyTrainSeatQueryResp.class);
+        PageInfo<DailyTrainSeat> pageInfo = new PageInfo<>(dailyTrainSeatList);
+        LOG.info("总行数：{}", pageInfo.getTotal());
+        LOG.info("总页数：{}", pageInfo.getPages());
+
+        List<DailyTrainSeatQueryResp> list = BeanUtil.copyToList(dailyTrainSeatList, DailyTrainSeatQueryResp.class);
 
         PageResp<DailyTrainSeatQueryResp> pageResp = new PageResp<>();
-            pageResp.setTotal(pageInfo.getTotal());
-            pageResp.setList(list);
-            return pageResp;
-            }
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setList(list);
+        return pageResp;
+    }
 
-            public void delete(Long id) {
-            dailyTrainSeatMapper.deleteByPrimaryKey(id);
-            }
-            }
+    public void delete(Long id) {
+        dailyTrainSeatMapper.deleteByPrimaryKey(id);
+    }
+}
