@@ -36,6 +36,12 @@ public class DailyTrainService {
     @Resource
     private DailyTrainStationService dailyTrainStationService;
 
+    @Resource
+    private DailyTrainCarriageService dailyTrainCarriageService;
+
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
+
 
 
     public void save(DailyTrainSaveReq req) {
@@ -105,5 +111,7 @@ public class DailyTrainService {
         dailyTrain.setDate(date);
         dailyTrainMapper.insert(dailyTrain);
         dailyTrainStationService.genDailyTrainStation(train.getCode(),date);
+        dailyTrainCarriageService.genDailyTrainCarriage(train.getCode(),date);
+        dailyTrainSeatService.genDaily(train.getCode(),date);
     }
 }
