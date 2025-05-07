@@ -33,6 +33,10 @@ public class DailyTrainService {
     @Resource
     private TrainService trainService;
 
+    @Resource
+    private DailyTrainStationService dailyTrainStationService;
+
+
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -100,5 +104,6 @@ public class DailyTrainService {
         dailyTrain.setCreateTime(now);
         dailyTrain.setDate(date);
         dailyTrainMapper.insert(dailyTrain);
+        dailyTrainStationService.genDailyTrainStation(train.getCode(),date);
     }
 }
