@@ -55,7 +55,7 @@ public class DailyTrainSeatService {
 
     public PageResp<DailyTrainSeatQueryResp> queryList(DailyTrainSeatQueryReq req) {
         DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
-        dailyTrainSeatExample.setOrderByClause("train_code asc,carriage_index asc,carriage_seat_index asc");
+        dailyTrainSeatExample.setOrderByClause("date desc,train_code asc,carriage_index asc,carriage_seat_index asc");
         DailyTrainSeatExample.Criteria criteria = dailyTrainSeatExample.createCriteria();
         if (StrUtil.isNotBlank(req.getTrainCode())) {
             System.out.println(req.getTrainCode());
@@ -104,5 +104,15 @@ public class DailyTrainSeatService {
             dailyTrainSeat.setId(SnowUtil.getSnowflakeNextId());
             dailyTrainSeatMapper.insert(dailyTrainSeat);
         }
+    }
+    public int countSeat(Date date,String trainCode,String seatType){
+        DailyTrainSeatExample example = new DailyTrainSeatExample();
+        DailyTrainSeatExample.Criteria criteria = example.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode).andDateEqualTo(date).andSeatTypeEqualTo(seatType);
+        long l = dailyTrainSeatMapper.countByExample(example);
+        if (l==0L){
+            return -1;
+        }
+        else return Math.toIntExact(l);
     }
 }

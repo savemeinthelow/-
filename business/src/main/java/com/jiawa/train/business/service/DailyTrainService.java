@@ -42,7 +42,8 @@ public class DailyTrainService {
     @Resource
     private DailyTrainSeatService dailyTrainSeatService;
 
-
+    @Resource
+    private DailyTrainTicketService dailyTrainTicketService;
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -113,5 +114,6 @@ public class DailyTrainService {
         dailyTrainStationService.genDailyTrainStation(train.getCode(),date);
         dailyTrainCarriageService.genDailyTrainCarriage(train.getCode(),date);
         dailyTrainSeatService.genDaily(train.getCode(),date);
+        dailyTrainTicketService.genDaily(dailyTrain,date, train.getCode());
     }
 }

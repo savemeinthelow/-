@@ -80,6 +80,11 @@
             <MenuUnfoldOutlined /> &nbsp; 每日座位
           </router-link>
         </a-menu-item>
+        <a-menu-item key="/business/daily-train-ticket">
+          <router-link to="/business/daily-train-ticket">
+            <MenuUnfoldOutlined /> &nbsp; 余票查询
+          </router-link>
+        </a-menu-item>
       </a-sub-menu>
     </a-menu>
 
