@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin/train-station")
-public class TrainStationController {
+public class TrainStationAdminController {
     @Resource
     private TrainStationService service;
 

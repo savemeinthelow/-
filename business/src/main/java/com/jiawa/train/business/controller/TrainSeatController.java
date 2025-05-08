@@ -1,7 +1,6 @@
-package com.jiawa.train.business.controller.admin;
+package com.jiawa.train.business.controller;
 
 import com.jiawa.train.business.req.TrainSeatQueryReq;
-import com.jiawa.train.business.req.TrainSeatSaveReq;
 import com.jiawa.train.business.resp.TrainSeatQueryResp;
 import com.jiawa.train.business.service.TrainSeatService;
 import com.jiawa.train.common.resp.CommonResp;
@@ -11,25 +10,15 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/train-seat")
+@RequestMapping("/train-seat")
 public class TrainSeatController {
     @Resource
     private TrainSeatService service;
 
-    @PostMapping("/save")
-    public CommonResp save(@Valid @RequestBody TrainSeatSaveReq trainSeat) {
-        service.save(trainSeat);
-        return new CommonResp<>();
-    }
     @GetMapping("/query-list")
     public CommonResp<PageResp> queryList(@Valid  TrainSeatQueryReq trainSeat) {
         PageResp<TrainSeatQueryResp> pageResp = service.queryList(trainSeat);
         return new CommonResp<>(pageResp);
-    }
-    @DeleteMapping("/delete/{id}")
-    public CommonResp delete(@PathVariable Long id){
-        service.delete(id);
-        return new CommonResp();
     }
 
 }

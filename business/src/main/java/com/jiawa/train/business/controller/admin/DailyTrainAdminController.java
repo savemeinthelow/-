@@ -15,7 +15,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/admin/daily-train")
-public class DailyTrainController {
+public class DailyTrainAdminController {
     @Resource
     private DailyTrainService service;
 

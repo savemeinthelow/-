@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/train")
-public class TrainController {
+public class TrainAdminController {
     @Resource
     private TrainService service;
     @Resource
