@@ -14,6 +14,21 @@
            :loading="loading">
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
+        <a-space/>
+        <a-button type="primary" @click="toOrder(record)">"预订"</a-button>
+<!--        <router-link :to="{
+            path: '/seat',
+            query: {
+              date: record.date,
+              trainCode: record.trainCode,
+              start: record.start,
+              startIndex: record.startIndex,
+              end: record.end,
+              endIndex: record.endIndex
+            }
+          }">
+          <a-button type="primary">座位销售图</a-button>
+        </router-link>-->
       </template>
       <template v-else-if="column.dataIndex==='station'">
         {{record.start}}<br/>
@@ -78,6 +93,7 @@ import {notification} from "ant-design-vue";
 import axios from "axios";
 import StationSelectView from "@/components/station-select.vue";
 import dayjs from "dayjs";
+import router from "@/router";
 
 export default defineComponent({
   name: "ticket-view",
@@ -158,7 +174,10 @@ export default defineComponent({
         dataIndex: 'yw',
         key: 'yw',
       },
-
+      {
+        title: '操作',
+        dataIndex: 'operation',
+      },
     ];
 
 
@@ -204,7 +223,11 @@ export default defineComponent({
         }
       });
     };
-
+    const toOrder = (record) => {
+      dailyTrainTicket.value = Tool.copy(record);
+      SessionStorage.set(SESSION_ORDER, dailyTrainTicket.value);
+      router.push("/order")
+    };
     const handleTableChange = (page) => {
       // console.log("看看自带的分页参数都有啥：" + JSON.stringify(page));
       pagination.value.pageSize = page.pageSize;
@@ -233,7 +256,8 @@ export default defineComponent({
       handleTableChange,
       handleQuery,
       loading,
-      params,calDuration
+      params,calDuration,
+      toOrder
     };
   },
 });

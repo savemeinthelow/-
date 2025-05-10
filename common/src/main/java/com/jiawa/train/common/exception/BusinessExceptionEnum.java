@@ -7,7 +7,9 @@ public enum BusinessExceptionEnum {
     BUSINESS_TRAIN_STATION_INDEX_UNIQUE_ERROR("火车站索引已存在"),
     BUSINESS_TRAIN_STATION_NAME_UNIQUE_ERROR("火车站名已存在"),
 
-    BUSINESS_TRAIN_CODE_UNIQUE_ERROR("火车编号已存在");
+    BUSINESS_TRAIN_CODE_UNIQUE_ERROR("火车编号已存在"),
+    CONFIRM_ORDER_TICKET_COUNT_ERROR("余票不足");
+
     private String desc;
 
     BusinessExceptionEnum(String desc) {

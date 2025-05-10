@@ -34,4 +34,8 @@ public class PassengerController {
         return new CommonResp();
     }
 
+    @GetMapping("query-mine")
+    public CommonResp queryMine(){
+        return new CommonResp(service.queryMine());
+    }
 }
