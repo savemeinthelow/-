@@ -15,7 +15,7 @@
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
         <a-space/>
-        <a-button type="primary" @click="toOrder(record)">"预订"</a-button>
+        <a-button type="primary" @click="toOrder(record)">预订</a-button>
 <!--        <router-link :to="{
             path: '/seat',
             query: {
@@ -200,6 +200,10 @@ export default defineComponent({
           size: pagination.value.pageSize
         };
       }
+
+      // 保存查询参数
+      SessionStorage.set(SESSION_TICKET_PARAMS, params.value);
+
       loading.value = true;
       axios.get("/business/daily-train-ticket/query-list", {
         params: {
@@ -241,10 +245,13 @@ export default defineComponent({
       return dayjs('00:00:00', 'HH:mm:ss').second(diff).format('HH:mm:ss');
     };
     onMounted(() => {
-   /*   handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      });*/
+      params.value = SessionStorage.get(SESSION_TICKET_PARAMS) || {};
+      if (Tool.isNotEmpty(params.value)) {
+        handleQuery({
+          page: 1,
+          size: pagination.value.pageSize
+        });
+      }
     });
 
     return {

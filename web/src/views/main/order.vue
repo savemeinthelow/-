@@ -104,8 +104,8 @@
       <!--最终选座：{{chooseSeatObj}}-->
     </div>
   </a-modal>
-
-  <!-- 第二层验证码 后端 -->
+<!--
+  &lt;!&ndash; 第二层验证码 后端 &ndash;&gt;
   <a-modal v-model:visible="imageCodeModalVisible" :title="null" :footer="null" :closable="false"
            style="top: 50px; width: 400px">
     <p style="text-align: center; font-weight: bold; font-size: 18px">
@@ -120,10 +120,10 @@
       </a-input>
     </p>
     <a-button type="danger" block @click="handleOk">输入验证码后开始购票</a-button>
-  </a-modal>
+  </a-modal>-->
 
   <!-- 第一层验证码 纯前端 -->
-  <a-modal v-model:visible="firstImageCodeModalVisible" :title="null" :footer="null" :closable="false"
+<!--  <a-modal v-model:visible="firstImageCodeModalVisible" :title="null" :footer="null" :closable="false"
            style="top: 50px; width: 400px">
     <p style="text-align: center; font-weight: bold; font-size: 18px">
       使用纯前端验证码削弱瞬时高峰<br/>
@@ -137,9 +137,9 @@
       </a-input>
     </p>
     <a-button type="danger" block @click="validFirstImageCode">提交验证码</a-button>
-  </a-modal>
+  </a-modal>-->
 
-  <a-modal v-model:visible="lineModalVisible" title="排队购票" :footer="null" :maskClosable="false" :closable="false"
+<!--  <a-modal v-model:visible="lineModalVisible" title="排队购票" :footer="null" :maskClosable="false" :closable="false"
            style="top: 50px; width: 400px">
     <div class="book-line">
       <div v-show="confirmOrderLineCount < 0">
@@ -151,7 +151,7 @@
     </div>
     <br/>
     <a-button type="danger" @click="onCancelOrder">取消购票</a-button>
-  </a-modal>
+  </a-modal>-->
 </template>
 
 <script>
@@ -386,9 +386,9 @@ export default defineComponent({
           // notification.success({description: "下单成功！"});
           visible.value = false;
           imageCodeModalVisible.value = false;
-          lineModalVisible.value = true;
+          // lineModalVisible.value = true;
           confirmOrderId.value = data.content;
-          queryLineCount();
+          // queryLineCount();
         } else {
           notification.error({description: data.message});
         }
@@ -400,7 +400,7 @@ export default defineComponent({
     let queryLineCountInterval;
 
     // 定时查询订单结果/排队数量
-    const queryLineCount = () => {
+    /*const queryLineCount = () => {
       confirmOrderLineCount.value = -1;
       queryLineCountInterval = setInterval(function () {
         axios.get("/business/confirm-order/query-line-count/" + confirmOrderId.value).then((response) => {
@@ -431,7 +431,7 @@ export default defineComponent({
           }
         });
       }, 500);
-    };
+    };*/
 
     /* ------------------- 第二层验证码 --------------------- */
     const imageCodeModalVisible = ref();

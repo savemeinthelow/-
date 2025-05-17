@@ -1,3 +1,6 @@
+SESSION_ALL_TRAIN = "SESSION_ALL_TRAIN";
+SESSION_ALL_STATION = "SESSION_ALL_STATION";
+
 SessionStorage = {
     get: function(key){
         var v = sessionStorage.getItem(key)
