@@ -32,6 +32,7 @@ import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,6 +60,9 @@ public class ConfirmOrderService {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Resource
     private SkTokenService skTokenService;
@@ -105,6 +109,7 @@ public class ConfirmOrderService {
     }
 
     public void doConfirm(ConfirmOrderDoReq req) {
+
         boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getId());
         if (validSkToken) {
             LOG.info("令牌校验通过");
@@ -156,7 +161,7 @@ public class ConfirmOrderService {
         reduceTickets(req, dailyTrainTicket);
         if (StrUtil.isNotBlank(confirmOrderTicketReq0.getSeat())) {
             List<String> seatList = new ArrayList<>();
-            //A B C D F A C D Fdaily_train_station
+
             List<SeatColEnum> colsByType = SeatColEnum.getColsByType(confirmOrderTicketReq0.getSeatTypeCode());
             for (int i = 1; i <= 2; i++) {
                 for (SeatColEnum seatColEnum : colsByType) {

@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Antd, {notification} from 'ant-design-vue'
-import 'ant-design-vue/dist/reset.css'
+import 'ant-design-vue/dist/antd.css'
 import * as Icons from '@ant-design/icons-vue'
 import axios from 'axios';
 import "./assets/js/enums";
