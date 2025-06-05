@@ -78,20 +78,21 @@ public class DailyTrainSeatService {
     public void delete(Long id) {
         dailyTrainSeatMapper.deleteByPrimaryKey(id);
     }
-    public void genDaily( String trainCode,Date date) {
+
+    public void genDaily(String trainCode, Date date) {
         DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
         DailyTrainSeatExample.Criteria criteria = dailyTrainSeatExample.createCriteria();
         criteria.andTrainCodeEqualTo(trainCode).andDateEqualTo(date);
         dailyTrainSeatMapper.deleteByExample(dailyTrainSeatExample);
 
         List<TrainSeat> trainSeats = trainSeatService.selectByTrainCode(trainCode);
-        if (CollUtil.isEmpty(trainSeats)){
+        if (CollUtil.isEmpty(trainSeats)) {
             LOG.info("该列车无座位数据！任务结束");
             return;
         }
         Date now = new Date();
         List<TrainStation> trainStations = trainStationService.selectByTrainCode(trainCode);
-        String sell = StrUtil.fillBefore("",'0',trainStations.size()-1);
+        String sell = StrUtil.fillBefore("", '0', trainStations.size() - 1);
         for (TrainSeat trainSeat : trainSeats) {
             DailyTrainSeat dailyTrainSeat = BeanUtil.copyProperties(trainSeat, DailyTrainSeat.class);
             dailyTrainSeat.setUpdateTime(now);
@@ -102,18 +103,25 @@ public class DailyTrainSeatService {
             dailyTrainSeatMapper.insert(dailyTrainSeat);
         }
     }
-    public int countSeat(Date date,String trainCode,String seatType){
-        DailyTrainSeatExample example = new DailyTrainSeatExample();
-        DailyTrainSeatExample.Criteria criteria = example.createCriteria();
-        criteria.andTrainCodeEqualTo(trainCode).andDateEqualTo(date).andSeatTypeEqualTo(seatType);
-        long l = dailyTrainSeatMapper.countByExample(example);
-        if (l==0L){
-            return -1;
-        }
-        else return Math.toIntExact(l);
+
+    public int countSeat(Date date, String trainCode) {
+        return countSeat(date, trainCode, null);
     }
 
-    public List<DailyTrainSeat> selectByCarriage(Date date,String trainCode,Integer carriageIndex){
+    public int countSeat(Date date, String trainCode, String seatType) {
+        DailyTrainSeatExample example = new DailyTrainSeatExample();
+        DailyTrainSeatExample.Criteria criteria = example.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode).andDateEqualTo(date);
+        if (StrUtil.isNotBlank(seatType)) {
+            criteria.andSeatTypeEqualTo(seatType);
+        }
+        long l = dailyTrainSeatMapper.countByExample(example);
+        if (l == 0L) {
+            return -1;
+        } else return Math.toIntExact(l);
+    }
+
+    public List<DailyTrainSeat> selectByCarriage(Date date, String trainCode, Integer carriageIndex) {
         DailyTrainSeatExample example = new DailyTrainSeatExample();
         example.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode)
                 .andCarriageIndexEqualTo(carriageIndex);

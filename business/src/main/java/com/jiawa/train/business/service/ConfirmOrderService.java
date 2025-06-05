@@ -3,6 +3,7 @@ package com.jiawa.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -12,6 +13,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jiawa.train.business.domain.*;
 import com.jiawa.train.business.enums.ConfirmOrderStatusEnum;
+import com.jiawa.train.business.enums.RedisKeyPreEnum;
 import com.jiawa.train.business.enums.SeatColEnum;
 import com.jiawa.train.business.enums.SeatTypeEnum;
 import com.jiawa.train.business.mapper.ConfirmOrderMapper;
@@ -25,13 +27,17 @@ import com.jiawa.train.common.exception.BusinessExceptionEnum;
 import com.jiawa.train.common.resp.PageResp;
 import com.jiawa.train.common.util.SnowUtil;
 import jakarta.annotation.Resource;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ConfirmOrderService {
@@ -50,6 +56,12 @@ public class ConfirmOrderService {
 
     @Resource
     private AfterConfirmOrderService afterConfirmOrderService;
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+    @Resource
+    private SkTokenService skTokenService;
     public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);
@@ -93,6 +105,27 @@ public class ConfirmOrderService {
     }
 
     public void doConfirm(ConfirmOrderDoReq req) {
+        boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getId());
+        if (validSkToken) {
+            LOG.info("令牌校验通过");
+        } else {
+            LOG.info("令牌校验不通过");
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SK_TOKEN_FAIL);
+        }
+        //分布式锁防止票超卖
+        String lockKey = RedisKeyPreEnum.CONFIRM_ORDER+DateUtil.formatDate(req.getDate())+"-"+req.getTrainCode();
+        RLock lock = null;
+        try{
+            lock = redissonClient.getLock(lockKey);
+            boolean tryLock = lock.tryLock(0, TimeUnit.SECONDS);
+            if (tryLock){
+                LOG.info("恭喜，抢到锁了！");
+            }
+            else{
+                LOG.info("很遗憾没抢到锁");
+                throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+            }
+
 
         Date date = req.getDate();
         String trainCode = req.getTrainCode();
@@ -121,9 +154,9 @@ public class ConfirmOrderService {
         List<DailyTrainSeat> finalSeatList = new ArrayList<>();
 
         reduceTickets(req, dailyTrainTicket);
-        if (StrUtil.isNotBlank(confirmOrderTicketReq0.getSeatTypeCode())) {
+        if (StrUtil.isNotBlank(confirmOrderTicketReq0.getSeat())) {
             List<String> seatList = new ArrayList<>();
-            //A B C D F A C D F
+            //A B C D F A C D Fdaily_train_station
             List<SeatColEnum> colsByType = SeatColEnum.getColsByType(confirmOrderTicketReq0.getSeatTypeCode());
             for (int i = 1; i <= 2; i++) {
                 for (SeatColEnum seatColEnum : colsByType) {
@@ -141,7 +174,13 @@ public class ConfirmOrderService {
                 offsetList.add(offset);
             }
             LOG.info("计算得到座位相对偏移值为:{}", offsetList);
-            getSeat(finalSeatList, date, trainCode, confirmOrderTicketReq0.getSeatTypeCode(), confirmOrderTicketReq0.getSeat().split("")[0], offsetList, dailyTrainTicket.getStartIndex(), dailyTrainTicket.getEndIndex());
+            getSeat(finalSeatList,
+                    date,
+                    trainCode,
+                    confirmOrderTicketReq0.getSeatTypeCode(),
+                    confirmOrderTicketReq0.getSeat().split("")[0],
+                    offsetList, dailyTrainTicket.getStartIndex(),
+                    dailyTrainTicket.getEndIndex());
         } else {
             LOG.info("本次购票没有选座");
             for (ConfirmOrderTicketReq ticket : tickets) {
@@ -163,7 +202,14 @@ public class ConfirmOrderService {
             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_EXCEPTION);
         }
 
-    }
+    } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally{
+            LOG.info("购票流程结束，释放锁{}",lockKey);
+            if (lock!=null&& lock.isHeldByCurrentThread()){
+                 lock.unlock();
+            }
+    }}
 
     private void getSeat(List<DailyTrainSeat> finalSeatList, Date date, String trainCode, String seatType, String column, List<Integer> offsetList, Integer startIndex, Integer endIndex) {
         List<DailyTrainSeat> getSeatList = new ArrayList<>();

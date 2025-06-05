@@ -21,7 +21,7 @@ create table `passenger` if not exist(
                              index `member_id_index` (`member_id`)
 )engine=innodb default charset=utf8mb4 comment '乘车人'
 */
-drop table if exists `ticket`;
+/*drop table if exists `ticket`;
 create table `ticket` (
                           `id` bigint not null comment 'id',
                           `member_id` bigint not null comment '会员id',
@@ -42,3 +42,17 @@ create table `ticket` (
                           primary key (`id`),
                           index `member_id_index` (`member_id`)
 ) engine=innodb default charset=utf8mb4 comment='车票';
+*/
+
+CREATE TABLE `undo_log` (
+                            `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                            `branch_id` bigint NOT NULL COMMENT '分支事务ID',
+                            `xid` varchar(100) NOT NULL COMMENT '全局事务唯一标识',
+                            `context` varchar(128) NOT NULL COMMENT '上下文',
+                            `rollback_info` longblob NOT NULL COMMENT '回滚信息',
+                            `log_status` int NOT NULL COMMENT '状态，0正常，1全局已完成',
+                            `log_created` datetime NOT NULL COMMENT '创建时间',
+                            `log_modified` datetime NOT NULL COMMENT '修改时间',
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `ux_undo_log` (`xid`, `branch_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='AT模式回滚日志表';

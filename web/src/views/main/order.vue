@@ -383,7 +383,7 @@ export default defineComponent({
       }).then((response) => {
         let data = response.data;
         if (data.success) {
-          // notification.success({description: "下单成功！"});
+          notification.success({description: "下单成功！"});
           visible.value = false;
           imageCodeModalVisible.value = false;
           // lineModalVisible.value = true;
