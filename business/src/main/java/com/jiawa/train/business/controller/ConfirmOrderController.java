@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.jiawa.train.business.req.ConfirmOrderDoReq;
 import com.jiawa.train.business.req.ConfirmOrderQueryReq;
 import com.jiawa.train.business.resp.ConfirmOrderQueryResp;
+import com.jiawa.train.business.service.BeforeConfirmOrderService;
 import com.jiawa.train.business.service.ConfirmOrderService;
 import com.jiawa.train.common.resp.CommonResp;
 import com.jiawa.train.common.resp.PageResp;
@@ -22,6 +23,8 @@ public class ConfirmOrderController {
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private ConfirmOrderService service;
+    @Resource
+    private BeforeConfirmOrderService beforeConfirmOrderService;
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfirmOrderService.class);
 
@@ -51,7 +54,8 @@ public class ConfirmOrderController {
         }else{
             stringRedisTemplate.delete(imageCodeToken);
         }
-        service.doConfirm(req);
+//        service.doConfirm(req);
+        beforeConfirmOrderService.beforeDoConfirm(req);
         return new CommonResp();
 
     }
