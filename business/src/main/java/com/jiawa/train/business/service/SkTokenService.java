@@ -18,11 +18,11 @@ import com.jiawa.train.business.resp.SkTokenQueryResp;
 import com.jiawa.train.common.resp.PageResp;
 import com.jiawa.train.common.util.SnowUtil;
 import jakarta.annotation.Resource;
-import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +52,9 @@ public class SkTokenService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Value("${spring.profiles.active}")
+    private String env;
 
     public void genDaily(Date date, String trainCode) {
         LOG.info("删除日期【{}】车次【{}】的令牌记录", DateUtil.formatDate(date), trainCode);
@@ -117,7 +120,7 @@ public class SkTokenService {
     }
 
     public boolean validSkToken(Date date, String trainCode, Long memberId) {
-        String lockKey = RedisKeyPreEnum.SK_TOKEN + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
+     /*   String lockKey = RedisKeyPreEnum.SK_TOKEN + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
         RLock lock = redissonClient.getLock(lockKey);
         boolean tryLock = false;
         try {
@@ -130,7 +133,7 @@ public class SkTokenService {
         } else {
             LOG.info("很遗憾没抢到锁");
             return false;
-        }
+        }*/
         LOG.info("会员【{}】获取日" +
                 "期【{}】车次【{}】的令牌", memberId, date, trainCode);
         String skTokenCountKey = RedisKeyPreEnum.SK_TOKEN_COUNT + "-" + DateUtil.formatDate(date) + "-" + trainCode;

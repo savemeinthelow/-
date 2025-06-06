@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,8 @@ public class ConfirmOrderController {
     private BeforeConfirmOrderService beforeConfirmOrderService;
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfirmOrderService.class);
-
+    @Value("${spring.profiles.active}")
+    private String env;
 
     @GetMapping("/query-list")
     public CommonResp<PageResp> queryList(@Valid  ConfirmOrderQueryReq confirmOrder) {
@@ -42,6 +44,7 @@ public class ConfirmOrderController {
 
     @PostMapping("/do")
     public CommonResp doConfirm(@RequestBody ConfirmOrderDoReq req){
+        if (!env.equals("dev")) {
         String imageCodeToken = req.getImageCodeToken();
         String imageCode = req.getImageCode();
         String imageCodeRedis = stringRedisTemplate.opsForValue().get(imageCodeToken);
@@ -53,7 +56,7 @@ public class ConfirmOrderController {
             return new CommonResp<>(false, "验证码错误", null);
         }else{
             stringRedisTemplate.delete(imageCodeToken);
-        }
+        }}
 //        service.doConfirm(req);
         beforeConfirmOrderService.beforeDoConfirm(req);
         return new CommonResp();

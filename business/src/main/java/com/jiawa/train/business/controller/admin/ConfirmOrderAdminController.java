@@ -1,6 +1,5 @@
 package com.jiawa.train.business.controller.admin;
 
-import com.jiawa.train.business.req.ConfirmOrderDoReq;
 import com.jiawa.train.business.req.ConfirmOrderQueryReq;
 import com.jiawa.train.business.resp.ConfirmOrderQueryResp;
 import com.jiawa.train.business.service.ConfirmOrderService;
@@ -27,11 +26,11 @@ public class ConfirmOrderAdminController {
         return new CommonResp();
     }
 
-    @PostMapping("/do")
+/*    @PostMapping("/do")
     public CommonResp doConfirm(@RequestBody ConfirmOrderDoReq req){
         service.doConfirm(req);
         return new CommonResp();
 
-    }
+    }*/
 
 }

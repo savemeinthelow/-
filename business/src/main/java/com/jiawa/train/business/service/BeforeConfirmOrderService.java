@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.jiawa.train.business.domain.ConfirmOrder;
+import com.jiawa.train.business.dto.ConfirmOrderMQDto;
 import com.jiawa.train.business.enums.ConfirmOrderStatusEnum;
 import com.jiawa.train.business.enums.RedisKeyPreEnum;
 import com.jiawa.train.business.enums.RocketMQTopicEnum;
@@ -78,9 +79,13 @@ public class BeforeConfirmOrderService {
         confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
         confirmOrder.setTickets(JSON.toJSONString(tickets));
         confirmOrderMapper.insert(confirmOrder);
-        req.setMemberId(LoginMemberContext.getId());
-        req.setLogId(MDC.get("LOG_ID"));
-        String reqJson = JSON.toJSONString(req);
+//        req.setMemberId(LoginMemberContext.getId());
+//        req.setLogId(MDC.get("LOG_ID"));
+        ConfirmOrderMQDto confirmOrderMQDto = new ConfirmOrderMQDto();
+        confirmOrderMQDto.setDate(req.getDate());
+        confirmOrderMQDto.setLogId(MDC.get("LOG_ID"));
+        confirmOrderMQDto.setTrainCode(req.getTrainCode());
+        String reqJson = JSON.toJSONString(confirmOrderMQDto);
         rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(),reqJson);
          LOG.info("发送mq开始，消息：{}", reqJson);
     }
