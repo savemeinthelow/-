@@ -74,6 +74,7 @@ public class ConfirmOrderDoReq {
      */
     private int lineNumber;
 
+
     public Long getMemberId() {
         return memberId;
     }

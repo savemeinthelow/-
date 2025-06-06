@@ -10,6 +10,7 @@
         <a-menu-item key="/welcome"><router-link to="/welcome"><coffee-outlined /> &nbsp;欢迎</router-link></a-menu-item>
         <a-menu-item key="/passenger"><router-link to="/passenger"><coffee-outlined /> &nbsp;乘车人管理</router-link></a-menu-item>
         <a-menu-item key="/ticket"><router-link to="/ticket"><coffee-outlined /> &nbsp;余票查询</router-link></a-menu-item>
+ <a-menu-item key="/my-ticket"><router-link to="/my-ticket"><coffee-outlined /> &nbsp;我的车票</router-link></a-menu-item>
 
     </a-menu>
   </a-layout-sider>

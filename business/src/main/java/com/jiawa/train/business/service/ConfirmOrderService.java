@@ -8,7 +8,6 @@ import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jiawa.train.business.domain.*;
@@ -21,7 +20,6 @@ import com.jiawa.train.business.req.ConfirmOrderDoReq;
 import com.jiawa.train.business.req.ConfirmOrderQueryReq;
 import com.jiawa.train.business.req.ConfirmOrderTicketReq;
 import com.jiawa.train.business.resp.ConfirmOrderQueryResp;
-import com.jiawa.train.common.context.LoginMemberContext;
 import com.jiawa.train.common.exception.BusinessException;
 import com.jiawa.train.common.exception.BusinessExceptionEnum;
 import com.jiawa.train.common.resp.PageResp;
@@ -63,6 +61,7 @@ public class ConfirmOrderService {
 
     @Resource
     private SkTokenService skTokenService;
+
     public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);
@@ -106,37 +105,38 @@ public class ConfirmOrderService {
     }
 
     public void doConfirm(ConfirmOrderDoReq req) {
-
-        boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getId());
+      /*  boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getId());
         if (validSkToken) {
             LOG.info("令牌校验通过");
         } else {
             LOG.info("令牌校验不通过");
             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SK_TOKEN_FAIL);
-        }
+        }*/
         //分布式锁防止票超卖
-        String lockKey = RedisKeyPreEnum.CONFIRM_ORDER+DateUtil.formatDate(req.getDate())+"-"+req.getTrainCode();
+        String lockKey = RedisKeyPreEnum.CONFIRM_ORDER + DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
         RLock lock = null;
-        try{
-            lock = redissonClient.getLock(lockKey);
-            boolean tryLock = lock.tryLock(0, TimeUnit.SECONDS);
-            if (tryLock){
-                LOG.info("恭喜，抢到锁了！");
-            }
-            else{
-                LOG.info("很遗憾没抢到锁");
-                throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
-            }
-
-
+        lock = redissonClient.getLock(lockKey);
+        boolean tryLock = false;
+        try {
+            tryLock = lock.tryLock(0, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (tryLock) {
+            LOG.info("恭喜，抢到锁了！");
+        } else {
+            LOG.info("很遗憾没抢到锁");
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+        }
         Date date = req.getDate();
         String trainCode = req.getTrainCode();
         String start = req.getStart();
         String end = req.getEnd();
         List<ConfirmOrderTicketReq> tickets = req.getTickets();
-
-        // 保存确认订单表，状态初始
         DateTime now = DateTime.now();
+        // 保存确认订单表，状态初始
+
+        /*
         ConfirmOrder confirmOrder = new ConfirmOrder();
         confirmOrder.setId(SnowUtil.getSnowflakeNextId());
         confirmOrder.setCreateTime(now);
@@ -149,7 +149,20 @@ public class ConfirmOrderService {
         confirmOrder.setDailyTrainTicketId(req.getDailyTrainTicketId());
         confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
         confirmOrder.setTickets(JSON.toJSONString(tickets));
-        confirmOrderMapper.insert(confirmOrder);
+        confirmOrderMapper.insert(confirmOrder);*/
+
+        ConfirmOrderExample confirmOrderExample = new ConfirmOrderExample();
+        confirmOrderExample.setOrderByClause("id asc");
+        confirmOrderExample.createCriteria().andDateEqualTo(req.getDate())
+                .andTrainCodeEqualTo(req.getTrainCode())
+                .andMemberIdEqualTo(req.getMemberId())
+                .andStatusEqualTo(ConfirmOrderStatusEnum.INIT.getCode());
+        List<ConfirmOrder> confirmOrders = confirmOrderMapper.selectByExampleWithBLOBs(confirmOrderExample);
+        if (confirmOrders.isEmpty()) {
+            LOG.info("找不到原始订单，结束");
+            return;
+        }
+        ConfirmOrder confirmOrder = confirmOrders.get(0);
         ConfirmOrderTicketReq confirmOrderTicketReq0 = req.getTickets().get(0);
         DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(date, trainCode, start, end);
         LOG.info("查出余票记录：{}", dailyTrainTicket);
@@ -194,7 +207,6 @@ public class ConfirmOrderService {
 
                         dailyTrainTicket.getStartIndex(),
                         dailyTrainTicket.getEndIndex());
-
             }
         }
         try {
@@ -202,16 +214,13 @@ public class ConfirmOrderService {
         } catch (Exception e) {
             LOG.error("保存购票信息失败", e);
             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_EXCEPTION);
-        }
-
-    } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally{
-            LOG.info("购票流程结束，释放锁{}",lockKey);
-            if (lock!=null&& lock.isHeldByCurrentThread()){
-                 lock.unlock();
+        } finally {
+            LOG.info("购票流程结束，释放锁{}", lockKey);
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
             }
-    }}
+        }
+    }
 
     private void getSeat(List<DailyTrainSeat> finalSeatList, Date date, String trainCode, String seatType, String column, List<Integer> offsetList, Integer startIndex, Integer endIndex) {
         List<DailyTrainSeat> getSeatList = new ArrayList<>();
