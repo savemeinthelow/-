@@ -48,7 +48,7 @@ public class BeforeConfirmOrderService {
     @Resource
     private SkTokenService skTokenService;
 
-    public void beforeDoConfirm(ConfirmOrderDoReq req) {
+    public Long beforeDoConfirm(ConfirmOrderDoReq req) {
         boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getId());
         if (validSkToken) {
             LOG.info("令牌校验通过");
@@ -88,5 +88,6 @@ public class BeforeConfirmOrderService {
         String reqJson = JSON.toJSONString(confirmOrderMQDto);
         rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(),reqJson);
          LOG.info("发送mq开始，消息：{}", reqJson);
+         return confirmOrder.getId();
     }
 }

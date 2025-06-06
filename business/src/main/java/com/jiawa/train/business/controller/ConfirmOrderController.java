@@ -27,6 +27,8 @@ public class ConfirmOrderController {
     @Resource
     private BeforeConfirmOrderService beforeConfirmOrderService;
 
+    @Resource
+    private ConfirmOrderService confirmOrderService;
     private static final Logger LOG = LoggerFactory.getLogger(ConfirmOrderService.class);
     @Value("${spring.profiles.active}")
     private String env;
@@ -58,9 +60,14 @@ public class ConfirmOrderController {
             stringRedisTemplate.delete(imageCodeToken);
         }}
 //        service.doConfirm(req);
-        beforeConfirmOrderService.beforeDoConfirm(req);
-        return new CommonResp();
+        Long id = beforeConfirmOrderService.beforeDoConfirm(req);
+        return new CommonResp(String.valueOf(id));
+    }
 
+    @GetMapping("/query-line-count/{id}")
+    public CommonResp<Integer> queryLineCount(@PathVariable Long id){
+        Integer count = confirmOrderService.queryLineCount(id);
+        return new CommonResp<>(count);
     }
 
 }
