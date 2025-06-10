@@ -1,3 +1,4 @@
+/*
 package com.jiawa.train.business.mq;
 
 import com.alibaba.fastjson.JSON;
@@ -33,3 +34,4 @@ public class ConfirmOrderConsumer implements RocketMQListener<MessageExt> {
     }
 }
 
+*/

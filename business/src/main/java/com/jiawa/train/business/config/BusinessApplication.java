@@ -8,11 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @ComponentScan("com.jiawa")
 @MapperScan("com.jiawa.train.*.mapper")
 @EnableFeignClients(basePackages = "com.jiawa.*")
+@EnableAsync
 public class BusinessApplication {
     private static final Logger LOG = LoggerFactory.getLogger(BusinessApplication.class);
 
