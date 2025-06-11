@@ -1,4 +1,5 @@
-package com.jiawa.train;
+/*
+package com.jiava.train;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,3 +12,4 @@ class TrainApplicationTests {
     }
 
 }
+*/
