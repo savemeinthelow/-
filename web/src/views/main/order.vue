@@ -97,10 +97,10 @@
         <div style="color: #999999">提示：您可以选择{{ tickets.length }}个座位</div>
       </div>
       <br>
-      <!--      <div style="color: red">-->
-      <!--        体验排队购票，加入多人一起排队购票：-->
-      <!--        <a-input-number v-model:value="lineNumber" :min="0" :max="20" />-->
-      <!--      </div>-->
+            <div style="color: red">
+              体验排队购票，加入多人一起排队购票：
+              <a-input-number v-model:value="lineNumber" :min="0" :max="20" />
+            </div>
       <!--<br/>-->
       <!--最终购票：{{tickets}}-->
       <!--最终选座：{{chooseSeatObj}}-->

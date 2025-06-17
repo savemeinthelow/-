@@ -2,12 +2,14 @@ package com.jiawa.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jiawa.train.business.domain.TrainStation;
+import com.jiawa.train.business.req.DailyTrainStationQueryAllReq;
 import com.jiawa.train.common.resp.PageResp;
 import com.jiawa.train.common.util.SnowUtil;
 import com.jiawa.train.business.domain.DailyTrainStation;
@@ -108,5 +110,13 @@ public class DailyTrainStationService {
         DailyTrainStationExample dailyTrainStationExample = new DailyTrainStationExample();
         dailyTrainStationExample.createCriteria().andTrainCodeEqualTo(trainCode).andDateEqualTo(date);
         return dailyTrainStationMapper.countByExample(dailyTrainStationExample);
+    }
+
+    public List<DailyTrainStationQueryResp> queryByTrain(Date date, String trainCode) {
+        DailyTrainStationExample example = new DailyTrainStationExample();
+        example.createCriteria().andTrainCodeEqualTo(trainCode).andDateEqualTo(date);
+        example.setOrderByClause("`index` asc");
+        List<DailyTrainStation> dailyTrainStations = dailyTrainStationMapper.selectByExample(example);
+        return BeanUtil.copyToList(dailyTrainStations, DailyTrainStationQueryResp.class);
     }
 }

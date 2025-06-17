@@ -1,7 +1,7 @@
 <template>
   <p>
     <a-space>
-      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期"/>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" :disabled-date="disableDate" placeholder="请选择日期"/>
       <station-select-view v-model="params.start"/>
       <station-select-view v-model="params.end"/>
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
@@ -15,8 +15,12 @@
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
         <a-space/>
-        <a-button type="primary" @click="toOrder(record)">预订</a-button>
-<!--        <router-link :to="{
+        <a-space>
+          <a-button type="primary" @click="toOrder(record)" :disabled="isExpire(record)">{{isExpire(record) ? "过期" : "预订"}}</a-button>
+
+          <a-button type="primary" @click="showStation(record)">途径车站</a-button>
+
+        <router-link :to="{
             path: '/seat',
             query: {
               date: record.date,
@@ -28,7 +32,8 @@
             }
           }">
           <a-button type="primary">座位销售图</a-button>
-        </router-link>-->
+        </router-link>
+        </a-space>
       </template>
       <template v-else-if="column.dataIndex==='station'">
         {{record.start}}<br/>
@@ -85,6 +90,27 @@
       </template>
     </template>
   </a-table>
+  <a-modal style="top: 30px" v-model:visible="visible" :title="null" :footer="null" :closable="false">
+    <a-table :data-source="stations" :pagination="false">
+      <a-table-column key="index" title="站序" data-index="index" />
+      <a-table-column key="name" title="站名" data-index="name" />
+      <a-table-column key="inTime" title="进站时间" data-index="inTime">
+        <template #default="{ record }">
+          {{record.index === 0 ? '-' : record.inTime}}
+        </template>
+      </a-table-column>
+      <a-table-column key="outTime" title="出站时间" data-index="outTime">
+        <template #default="{ record }">
+          {{record.index === (stations.length - 1) ? '-' : record.outTime}}
+        </template>
+      </a-table-column>
+      <a-table-column key="stopTime" title="停站时长" data-index="stopTime">
+        <template #default="{ record }">
+          {{record.index === 0 || record.index === (stations.length - 1) ? '-' : record.stopTime}}
+        </template>
+      </a-table-column>
+    </a-table>
+  </a-modal>
 </template>
 
 <script>
@@ -180,7 +206,32 @@ export default defineComponent({
       },
     ];
 
-
+    const stations= ref([]);
+    const showStation = (record)=>{
+      visible.value = true;
+      axios.get("/business/daily-train-station/daily-train-station",{
+        params:{
+          date: record.date,
+          trainCode: record.trainCode
+        }
+      }).then((response)=>{
+        let data = response.data
+        if (data.success){
+          stations.value = data.content;
+        }else{
+          notification.error({description: data.message});
+        }
+      });
+    };
+    const disableDate = current =>{
+      return current && (current <= dayjs().add(-1,'day') || current > dayjs().add(14,'day'));
+    }
+    const isExpire = (record) =>{
+      let startDateTimeString = record.date.replace(/-/g, "/") + " " +record.startTime;
+      let startDateTime = new Date(startDateTimeString);
+      let now = new Date();
+      return now.valueOf() >= startDateTime.valueOf();
+    }
     const handleQuery = (param) => {
       if (Tool.isEmpty(params.value.date)){
         notification.error({description: "请输入日期"});
@@ -227,6 +278,7 @@ export default defineComponent({
         }
       });
     };
+
     const toOrder = (record) => {
       dailyTrainTicket.value = Tool.copy(record);
       SessionStorage.set(SESSION_ORDER, dailyTrainTicket.value);
@@ -264,7 +316,11 @@ export default defineComponent({
       handleQuery,
       loading,
       params,calDuration,
-      toOrder
+      toOrder,
+      showStation,
+      stations,
+      disableDate,
+      isExpire
     };
   },
 });
