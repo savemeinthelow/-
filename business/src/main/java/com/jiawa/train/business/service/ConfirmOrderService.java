@@ -451,4 +451,11 @@ public class ConfirmOrderService {
         }
         return result;
     }
+    public int cancel(Long id){
+        ConfirmOrderExample example = new ConfirmOrderExample();
+        example.createCriteria().andIdEqualTo(id).andStatusEqualTo(ConfirmOrderStatusEnum.INIT.getCode());
+        ConfirmOrder confirmOrder = new ConfirmOrder();
+        confirmOrder.setStatus(ConfirmOrderStatusEnum.CANCEL.getCode());
+        return confirmOrderMapper.updateByExampleSelective(confirmOrder,example);
+    }
 }

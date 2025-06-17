@@ -138,6 +138,7 @@ export default defineComponent({
 
 
     const handleQuery = (param) => {
+      console.log('[ENV] VUE_APP_SERVER:', process.env.VUE_APP_SERVER)
       if (!param) {
         param = {
           page: 1,

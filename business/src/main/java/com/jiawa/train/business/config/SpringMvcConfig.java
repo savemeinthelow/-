@@ -25,4 +25,5 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                       "/hello"
               );
    }
+
 }
