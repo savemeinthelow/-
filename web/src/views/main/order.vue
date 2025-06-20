@@ -1,24 +1,24 @@
 <template>
   <div class="order-train">
-    <span class="order-train-main">{{ dailyTrainTicket.date }}</span>&nbsp;
-    <span class="order-train-main">{{ dailyTrainTicket.trainCode }}</span>次&nbsp;
-    <span class="order-train-main">{{ dailyTrainTicket.start }}</span>站
-    <span class="order-train-main">({{ dailyTrainTicket.startTime }})</span>&nbsp;
+    <span class="order-train-main">{{dailyTrainTicket.date}}</span>&nbsp;
+    <span class="order-train-main">{{dailyTrainTicket.trainCode}}</span>次&nbsp;
+    <span class="order-train-main">{{dailyTrainTicket.start}}</span>站
+    <span class="order-train-main">({{dailyTrainTicket.startTime}})</span>&nbsp;
     <span class="order-train-main">——</span>&nbsp;
-    <span class="order-train-main">{{ dailyTrainTicket.end }}</span>站
-    <span class="order-train-main">({{ dailyTrainTicket.endTime }})</span>&nbsp;
+    <span class="order-train-main">{{dailyTrainTicket.end}}</span>站
+    <span class="order-train-main">({{dailyTrainTicket.endTime}})</span>&nbsp;
 
     <div class="order-train-ticket">
       <span v-for="item in seatTypes" :key="item.type">
-        <span>{{ item.desc }}</span>：
-        <span class="order-train-ticket-main">{{ item.price }}￥</span>&nbsp;
-        <span class="order-train-ticket-main">{{ item.count }}</span>&nbsp;张票&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>{{item.desc}}</span>：
+        <span class="order-train-ticket-main">{{item.price}}￥</span>&nbsp;
+        <span class="order-train-ticket-main">{{item.count}}</span>&nbsp;张票&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </span>
     </div>
   </div>
   <a-divider></a-divider>
   <b>勾选要购票的乘客：</b>&nbsp;
-  <a-checkbox-group v-model:value="passengerChecks" :options="passengerOptions"/>
+  <a-checkbox-group v-model:value="passengerChecks" :options="passengerOptions" />
 
   <div class="order-tickets">
     <a-row class="order-tickets-header" v-if="tickets.length > 0">
@@ -28,19 +28,19 @@
       <a-col :span="4">座位类型</a-col>
     </a-row>
     <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.passengerId">
-      <a-col :span="2">{{ ticket.passengerName }}</a-col>
-      <a-col :span="6">{{ ticket.passengerIdCard }}</a-col>
+      <a-col :span="2">{{ticket.passengerName}}</a-col>
+      <a-col :span="6">{{ticket.passengerIdCard}}</a-col>
       <a-col :span="4">
         <a-select v-model:value="ticket.passengerType" style="width: 100%">
           <a-select-option v-for="item in PASSENGER_TYPE_ARRAY" :key="item.code" :value="item.code">
-            {{ item.desc }}
+            {{item.desc}}
           </a-select-option>
         </a-select>
       </a-col>
       <a-col :span="4">
         <a-select v-model:value="ticket.seatTypeCode" style="width: 100%">
           <a-select-option v-for="item in seatTypes" :key="item.code" :value="item.code">
-            {{ item.desc }}
+            {{item.desc}}
           </a-select-option>
         </a-select>
       </a-col>
@@ -62,19 +62,19 @@
         <a-col :span="3">座位类型</a-col>
       </a-row>
       <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.passengerId">
-        <a-col :span="3">{{ ticket.passengerName }}</a-col>
-        <a-col :span="15">{{ ticket.passengerIdCard }}</a-col>
+        <a-col :span="3">{{ticket.passengerName}}</a-col>
+        <a-col :span="15">{{ticket.passengerIdCard}}</a-col>
         <a-col :span="3">
           <span v-for="item in PASSENGER_TYPE_ARRAY" :key="item.code">
             <span v-if="item.code === ticket.passengerType">
-              {{ item.desc }}
+              {{item.desc}}
             </span>
           </span>
         </a-col>
         <a-col :span="3">
           <span v-for="item in seatTypes" :key="item.code">
             <span v-if="item.code === ticket.seatTypeCode">
-              {{ item.desc }}
+              {{item.desc}}
             </span>
           </span>
         </a-col>
@@ -87,27 +87,25 @@
       </div>
       <div v-else style="text-align: center">
         <a-switch class="choose-seat-item" v-for="item in SEAT_COL_ARRAY" :key="item.code"
-                  v-model:checked="chooseSeatObj[item.code + '1']" :checked-children="item.desc"
-                  :un-checked-children="item.desc"/>
+                  v-model:checked="chooseSeatObj[item.code + '1']" :checked-children="item.desc" :un-checked-children="item.desc" />
         <div v-if="tickets.length > 1">
           <a-switch class="choose-seat-item" v-for="item in SEAT_COL_ARRAY" :key="item.code"
-                    v-model:checked="chooseSeatObj[item.code + '2']" :checked-children="item.desc"
-                    :un-checked-children="item.desc"/>
+                    v-model:checked="chooseSeatObj[item.code + '2']" :checked-children="item.desc" :un-checked-children="item.desc" />
         </div>
-        <div style="color: #999999">提示：您可以选择{{ tickets.length }}个座位</div>
+        <div style="color: #999999">提示：您可以选择{{tickets.length}}个座位</div>
       </div>
       <br>
-            <div style="color: red">
-              体验排队购票，加入多人一起排队购票：
-              <a-input-number v-model:value="lineNumber" :min="0" :max="20" />
-            </div>
+      <div style="color: red">
+        体验排队购票，加入多人一起排队购票：
+        <a-input-number v-model:value="lineNumber" :min="0" :max="20" />
+      </div>
       <!--<br/>-->
       <!--最终购票：{{tickets}}-->
       <!--最终选座：{{chooseSeatObj}}-->
     </div>
   </a-modal>
-  <!--
-    &lt;!&ndash; 第二层验证码 后端 &ndash;&gt;-->
+
+  <!-- 第二层验证码 后端 -->
   <a-modal v-model:visible="imageCodeModalVisible" :title="null" :footer="null" :closable="false"
            style="top: 50px; width: 400px">
     <p style="text-align: center; font-weight: bold; font-size: 18px">
@@ -134,26 +132,26 @@
     <p>
       <a-input v-model:value="firstImageCodeTarget" placeholder="验证码">
         <template #suffix>
-          {{ firstImageCodeSourceA }} + {{ firstImageCodeSourceB }}
+          {{firstImageCodeSourceA}} + {{firstImageCodeSourceB}}
         </template>
       </a-input>
     </p>
     <a-button type="danger" block @click="validFirstImageCode">提交验证码</a-button>
   </a-modal>
 
-    <a-modal v-model:visible="lineModalVisible" title="排队购票" :footer="null" :maskClosable="false" :closable="false"
-             style="top: 50px; width: 400px">
-      <div class="book-line">
-        <div v-show="confirmOrderLineCount < 0">
-          <loading-outlined /> 系统正在处理中...
-        </div>
-        <div v-show="confirmOrderLineCount >= 0">
-          <loading-outlined /> 您前面还有{{confirmOrderLineCount}}位用户在购票，排队中，请稍候
-        </div>
+  <a-modal v-model:visible="lineModalVisible" title="排队购票" :footer="null" :maskClosable="false" :closable="false"
+           style="top: 50px; width: 400px">
+    <div class="book-line">
+      <div v-show="confirmOrderLineCount < 0">
+        <loading-outlined /> 系统正在处理中...
       </div>
-      <br/>
-      <a-button type="danger" @click="onCancelOrder">取消购票</a-button>
-    </a-modal>
+      <div v-show="confirmOrderLineCount >= 0">
+        <loading-outlined /> 您前面还有{{confirmOrderLineCount}}位用户在购票，排队中，请稍候
+      </div>
+    </div>
+    <br/>
+    <a-button type="danger" @click="onCancelOrder">取消购票</a-button>
+  </a-modal>
 </template>
 
 <script>
@@ -173,6 +171,15 @@ export default defineComponent({
 
     const SEAT_TYPE = window.SEAT_TYPE;
     console.log(SEAT_TYPE)
+    // 本车次提供的座位类型seatTypes，含票价，余票等信息，例：
+    // {
+    //   type: "YDZ",
+    //   code: "1",
+    //   desc: "一等座",
+    //   count: "100",
+    //   price: "50",
+    // }
+    // 关于SEAT_TYPE[KEY]：当知道某个具体的属性xxx时，可以用obj.xxx，当属性名是个变量时，可以使用obj[xxx]
     const seatTypes = [];
     for (let KEY in SEAT_TYPE) {
       let key = KEY.toLowerCase();
@@ -376,7 +383,7 @@ export default defineComponent({
       }).then((response) => {
         let data = response.data;
         if (data.success) {
-          notification.success({description: "下单成功！"});
+          // notification.success({description: "下单成功！"});
           visible.value = false;
           imageCodeModalVisible.value = false;
           lineModalVisible.value = true;
@@ -393,7 +400,38 @@ export default defineComponent({
     let queryLineCountInterval;
 
     // 定时查询订单结果/排队数量
-
+    const queryLineCount = () => {
+      confirmOrderLineCount.value = -1;
+      queryLineCountInterval = setInterval(function () {
+        axios.get("/business/confirm-order/query-line-count/" + confirmOrderId.value).then((response) => {
+          let data = response.data;
+          if (data.success) {
+            let result = data.content;
+            switch (result) {
+              case -1 :
+                notification.success({description: "购票成功！"});
+                lineModalVisible.value = false;
+                clearInterval(queryLineCountInterval);
+                break;
+              case -2:
+                notification.error({description: "购票失败！"});
+                lineModalVisible.value = false;
+                clearInterval(queryLineCountInterval);
+                break;
+              case -3:
+                notification.error({description: "抱歉，没票了！"});
+                lineModalVisible.value = false;
+                clearInterval(queryLineCountInterval);
+                break;
+              default:
+                confirmOrderLineCount.value = result;
+            }
+          } else {
+            notification.error({description: data.message});
+          }
+        });
+      }, 500);
+    };
 
     /* ------------------- 第二层验证码 --------------------- */
     const imageCodeModalVisible = ref();
@@ -419,81 +457,40 @@ export default defineComponent({
     const firstImageCodeTarget = ref();
     const firstImageCodeModalVisible = ref();
 
-
+    /**
+     * 加载第一层验证码
+     */
     const loadFirstImageCode = () => {
+      // 获取1~10的数：Math.floor(Math.random()*10 + 1)
       firstImageCodeSourceA.value = Math.floor(Math.random() * 10 + 1) + 10;
       firstImageCodeSourceB.value = Math.floor(Math.random() * 10 + 1) + 20;
+    };
 
-    }
-
-
+    /**
+     * 显示第一层验证码弹出框
+     */
     const showFirstImageCodeModal = () => {
       loadFirstImageCode();
       firstImageCodeModalVisible.value = true;
     };
+
+    /**
+     * 校验第一层验证码
+     */
     const validFirstImageCode = () => {
-      if (parseInt(firstImageCodeTarget.value) === parseInt(firstImageCodeSourceA.value) + parseInt(firstImageCodeSourceB.value)) {
+      if (parseInt(firstImageCodeTarget.value) === parseInt(firstImageCodeSourceA.value + firstImageCodeSourceB.value)) {
+        // 第一层验证通过
         firstImageCodeModalVisible.value = false;
         showImageCodeModal();
       } else {
         notification.error({description: '验证码错误'});
       }
-    }
+    };
 
-
-    const queryLineCount = ()=>{
-      confirmOrderLineCount.value = -1;
-      queryLineCountInterval = setInterval(function (){
-        axios.get("/business/confirm-order/query-line-count/"+confirmOrderId.value).then((response)=>{
-          let data = response.data;
-          if (data.success){
-            let result = data.content;
-            switch (result){
-              case -1:
-                notification.success({description:"购票成功"});
-                lineModalVisible.value = false;
-                clearInterval(queryLineCountInterval);
-                break;
-              case -2:
-                notification.error({description:"购票失败"});
-                lineModalVisible.value = false;
-                clearInterval(queryLineCountInterval);
-                break;
-              case -3:
-                notification.error({description:"抱歉!票已卖光"});
-                lineModalVisible.value = false;
-                clearInterval(queryLineCountInterval);
-                break;
-              default:
-                confirmOrderLineCount.value = result;
-            }
-          }
-          else{
-            notification.error({description:data.message});
-          }
-        })
-      },500)
-    }
-    const onCancelOrder = () =>{
-      axios.get("/business/confirm-order/cancel/"+confirmOrderId.value).then((response)=>{
-        let data = response.data;
-        if (data.success){
-          let result = data.content;
-          if (result === 1){
-            notification.success({description:'取消成功！'});
-            clearInterval(queryLineCountInterval);
-            lineModalVisible.value = false;
-          }
-          else{
-            notification.success({description:" 取消失败！"});
-
-          }
-        }else {
-          notification.error({description: data.message});
-        }
-      })
-    }
-   /* const onCancelOrder = () => {
+    /**
+     * 取消排队
+     */
+    const onCancelOrder = () => {
       axios.get("/business/confirm-order/cancel/" + confirmOrderId.value).then((response) => {
         let data = response.data;
         if (data.success) {
@@ -510,7 +507,7 @@ export default defineComponent({
           notification.error({description: data.message});
         }
       });
-    };*/
+    };
 
     onMounted(() => {
       handleQueryPassenger();
@@ -545,11 +542,8 @@ export default defineComponent({
       lineModalVisible,
       confirmOrderId,
       confirmOrderLineCount,
-      queryLineCountInterval,
       onCancelOrder,
-      lineNumber,
-      queryLineCount
-
+      lineNumber
     };
   },
 });
